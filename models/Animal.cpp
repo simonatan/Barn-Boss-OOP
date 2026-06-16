@@ -15,6 +15,7 @@ int  Animal::getId() const {
 std::string Animal::getType() const {
     return type;
 }
+// ?
 std::string Animal::getOutput() const {
     return output;
 }
