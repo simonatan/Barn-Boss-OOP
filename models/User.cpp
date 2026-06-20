@@ -22,6 +22,10 @@ void User::changePassword(const std::string& oldPass, const std::string& newPass
         std::cout << "Incorrect old password!\n";
         return;
     }
+    if (newPass.size() < 3) {
+        std::cout << "Password too short!\n";
+        return;
+    }
     password = newPass;
     std::cout << "Password changed successfully!\n";
 }
