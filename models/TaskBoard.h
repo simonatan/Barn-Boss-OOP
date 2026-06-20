@@ -20,5 +20,4 @@ public:
 
     [[nodiscard]] const std::vector<Task>& getTasks() const;
     void clearTasks();
-    // void resetNextId(int id);
 };

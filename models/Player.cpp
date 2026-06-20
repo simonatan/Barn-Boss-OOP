@@ -14,6 +14,7 @@ int Player::getBalance() const { return balance;  }
 int Player::getScore() const { return score; }
 int Player::getCycle() const { return cycle; }
 
+void Player::setBalance(int amount) { balance = amount; }
 void Player::addBalance(int amount) { balance += amount; }
 void Player::removeBalance(int amount) { balance -= amount; }
 void Player::addScore(int amount) { score += amount; }

@@ -19,7 +19,7 @@ void TaskService::addTask(TaskManager* manager, const std::vector<std::string>& 
 void TaskService::removeTask(TaskManager* manager, const std::vector<std::string>& args) {
     if (!manager) throw AuthenticationException("Only TaskManagers can remove tasks!");
     if (!Validator::isValidCommandSize(args.size(), 1)) return;
-    taskBoard.removeTask(Utils::toInt(args[0])); // throws NotFoundException
+    taskBoard.removeTask(Utils::toInt(args[0]));
     std::cout << "Task removed successfully!\n";
 }
 

@@ -29,10 +29,10 @@ void UserService::registerUser(const std::vector<std::string>& args) {
     if (type == "Player") {
         players.push_back(std::make_unique<Player>(newId, username, password));
     } else if (type == "MarketManager") {
-        if (!MarketManager::canCreate()) { std::cout << "MarketManager already exists!\n"; return; }
+        if (marketManager) { std::cout << "MarketManager already exists!\n"; return; }
         marketManager = std::make_unique<MarketManager>(newId, username, password);
     } else if (type == "TaskManager") {
-        if (!TaskManager::canCreate()) { std::cout << "TaskManager already exists!\n"; return; }
+        if (taskManager) { std::cout << "TaskManager already exists!\n"; return; }
         taskManager = std::make_unique<TaskManager>(newId, username, password);
     } else {
         std::cout << "Invalid user type!\n";
@@ -97,14 +97,6 @@ std::vector<Player*> UserService::getPlayers() const {
     return result;
 }
 
-std::vector<User*> UserService::getAllUsers() const {
-    std::vector<User*> result;
-    for (const auto& p : players) result.push_back(p.get());
-    if (marketManager) result.push_back(marketManager.get());
-    if (taskManager)   result.push_back(taskManager.get());
-    return result;
-}
-
 void UserService::addPlayer(std::unique_ptr<Player> p) {
     players.push_back(std::move(p));
 }
@@ -125,8 +117,6 @@ void UserService::clearAll() {
     currentPlayer        = nullptr;
     currentMarketManager = nullptr;
     currentTaskManager   = nullptr;
-    MarketManager::resetTracker();
-    TaskManager::resetTracker();
 }
 
 const std::vector<std::unique_ptr<Player>>& UserService::getPlayersOwned()        const { return players; }

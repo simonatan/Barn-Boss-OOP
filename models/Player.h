@@ -22,6 +22,7 @@ public:
     int  getScore()   const;
     int  getCycle()   const;
 
+    void setBalance(int amount);
     void addBalance(int amount);
     void removeBalance(int amount);
     void addScore(int amount);

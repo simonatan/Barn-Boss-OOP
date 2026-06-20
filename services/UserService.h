@@ -33,9 +33,7 @@ public:
     TaskManager*   getCurrentTaskManager()   const;
 
     std::vector<Player*> getPlayers() const;
-    std::vector<User*>   getAllUsers() const;
 
-    // For deserialization
     void addPlayer(std::unique_ptr<Player> p);
     void setMarketManager(std::unique_ptr<MarketManager> m);
     void setTaskManager(std::unique_ptr<TaskManager> t);

@@ -101,7 +101,7 @@ void GameEngine::load() {
             currentPlayer = nullptr;
             if (w[1] == "Player") {
                 auto p = std::make_unique<Player>(Utils::asInt(w, 2, line), w[3], w[4]);
-                p->addBalance(Utils::asInt(w, 5, line) - 100);
+                p->setBalance(Utils::asInt(w, 5, line));
                 p->addScore(Utils::asInt(w, 6, line));
                 p->setCycle(Utils::asInt(w, 7, line));
                 currentPlayer = p.get();
