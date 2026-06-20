@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../engine/Command.h"
-#include "../models/Player.h"
+#include "../models/User.h"
 
 class GameEngine;
 
 class CommandExecutor {
     GameEngine& engine;
-    Player* requirePlayer();
+    User* requirePlayer() const;
 
 public:
     CommandExecutor(GameEngine& engine);

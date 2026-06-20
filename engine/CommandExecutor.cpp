@@ -6,8 +6,8 @@
 
 CommandExecutor::CommandExecutor(GameEngine& engine_) : engine(engine_) {}
 
-Player* CommandExecutor::requirePlayer() {
-    Player* p = engine.getCurrentPlayer();
+User* CommandExecutor::requirePlayer() const {
+    User* p = engine.getCurrentPlayer();
     if (!p) throw AuthenticationException("Not logged in as Player!");
     return p;
 }
@@ -35,9 +35,9 @@ void CommandExecutor::execute(const Command& cmd) {
         engine.getTaskService().showTasks();
     }
     else if (cmd.name == "showScoreboard") {
-        std::vector<Player*> players;
+        std::vector<User*> players;
         for (auto* u : engine.getUserService().getAllUsers())
-            if (u->getType() == "Player") players.push_back(dynamic_cast<Player*>(u)); // dynamic cast !!
+            if (u->isPlayer()) players.push_back(u);
         Scoreboard::showScoreboard(players);
     }
 

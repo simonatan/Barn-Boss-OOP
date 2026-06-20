@@ -9,7 +9,7 @@ class MarketService {
     Market market;
 
 public:
-    void openCatalog();
+    void openCatalog() const;
     bool buy(User* user, const std::vector<std::string>& args);
     bool sell(User* user, const std::vector<std::string>& args);
     void restock(User* user, const std::vector<std::string>& args);

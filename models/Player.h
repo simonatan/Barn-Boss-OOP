@@ -17,25 +17,26 @@ public:
 
     std::string getType() const override;
     void profileInfo() const override;
+    bool isPlayer() const override { return true; }
 
-    int getBalance() const;
-    int getScore() const;
-    int getCycle() const;
+    int  getBalance() const override;
+    int  getScore()   const override;
+    int  getCycle()   const override;
 
-    void addBalance(int amount);
-    void removeBalance(int amount);
-    void addScore(int amount);
-    void advanceCycle();
-    void setCycle(int c);
+    void addBalance(int amount)   override;
+    void removeBalance(int amount) override;
+    void addScore(int amount)     override;
+    void advanceCycle()           override;
+    void setCycle(int c)          override;
 
-    void addItem(const std::string& item, int qty);
-    bool removeItem(const std::string& item, int qty);
-    int getItemQty(const std::string& item) const;
-    void printBarn() const;
-    Barn& getBarn();
+    void addItem(const std::string& item, int qty)        override;
+    bool removeItem(const std::string& item, int qty)     override;
+    int  getItemQty(const std::string& item) const        override;
+    void printBarn() const                                override;
+    Barn& getBarn()                                       override;
 
-    Farm& getFarm();
-    void checkFarm() const;
-    void expandCropland();
-    void expandFarmland();
+    Farm& getFarm()         override;
+    void checkFarm() const  override;
+    void expandCropland()   override;
+    void expandFarmland()   override;
 };

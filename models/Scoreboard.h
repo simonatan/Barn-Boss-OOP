@@ -1,9 +1,9 @@
 #pragma once
 
 #include <vector>
-#include "../models/Player.h"
+#include "../models/User.h"
 
 class Scoreboard {
 public:
-    static void showScoreboard(const std::vector<Player*>& players);
+    static void showScoreboard(const std::vector<User*>& players);
 };

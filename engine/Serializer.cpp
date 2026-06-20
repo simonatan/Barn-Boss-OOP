@@ -4,7 +4,6 @@
 #include "../utils/Utils.h"
 #include <stdexcept>
 
-
 void Serializer::serializeAll(std::ofstream& out,
                                const std::vector<User*>& users,
                                const Market& market,
@@ -16,27 +15,25 @@ void Serializer::serializeAll(std::ofstream& out,
 
     for (auto* u : users) {
         if (u->getType() == "Player") {
-            auto* p = dynamic_cast<Player*>(u);
-            out << "USER Player " << p->getId() << " " << p->getUsername()
-                << " " << p->getPassword() << " " << p->getBalance()
-                << " " << p->getScore() << " " << p->getCycle() << "\n";
+            out << "USER Player " << u->getId() << " " << u->getUsername()
+                << " " << u->getPassword() << " " << u->getBalance()
+                << " " << u->getScore() << " " << u->getCycle() << "\n";
 
             out << "BARN";
-            for (const auto& kv : p->getBarn().getItems())
+            for (const auto& kv : u->getBarn().getItems())
                 out << " " << kv.first << " " << kv.second;
             out << "\n";
 
-            out << "FARMCAP " << p->getFarm().getPlantCapacity()
-                << " "        << p->getFarm().getAnimalCapacity() << "\n";
+            out << "FARMCAP " << u->getFarm().getPlantCapacity()
+                << " "        << u->getFarm().getAnimalCapacity() << "\n";
 
-            for (const auto& pl : p->getFarm().getPlants())
+            for (const auto& pl : u->getFarm().getPlants())
                 out << "PLANT " << pl.getType() << " " << pl.getCurrentCycle()
                     << " " << pl.getRequiredCycle() << " " << pl.getOutput() << "\n";
 
-            for (const auto& an : p->getFarm().getAnimals())
+            for (const auto& an : u->getFarm().getAnimals())
                 out << "ANIMAL " << an.getType() << " " << an.getCurrentCycle()
                     << " " << an.getRequiredCycle() << " " << an.getOutput() << "\n";
-
         } else if (u->getType() == "MarketManager") {
             out << "USER MarketManager " << u->getId() << " " << u->getUsername() << " " << u->getPassword() << "\n";
         } else if (u->getType() == "TaskManager") {

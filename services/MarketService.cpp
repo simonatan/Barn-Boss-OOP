@@ -5,23 +5,22 @@
 #include "../utils/Exceptions.h"
 #include <iostream>
 
-void MarketService::openCatalog() { market.showCatalog(); }
+void MarketService::openCatalog() const { market.showCatalog(); }
 
 bool MarketService::buy(User* user, const std::vector<std::string>& args) {
     if (!user || user->getType() != "Player")
         throw AuthenticationException("Only Players can purchase items!");
     if (!Validator::isValidCommandSize(args.size(), 2)) return false;
 
-    auto* player  = dynamic_cast<Player*>(user); // dynamic cast !!
     int productId = Utils::toInt(args[0]);
-    int quantity = Utils::toInt(args[1]);
-    int balance = player->getBalance();
+    int quantity  = Utils::toInt(args[1]);
+    int balance   = user->getBalance();
     std::string itemName;
 
     if (!market.buyProduct(productId, quantity, balance, itemName)) return false;
 
-    player->removeBalance(player->getBalance() - balance);
-    player->addItem(itemName, quantity);
+    user->removeBalance(user->getBalance() - balance);
+    user->addItem(itemName, quantity);
     return true;
 }
 
@@ -30,7 +29,6 @@ bool MarketService::sell(User* user, const std::vector<std::string>& args) {
         throw AuthenticationException("Only Players can sell items!");
     if (!Validator::isValidCommandSize(args.size(), 2)) return false;
 
-    auto* player  = dynamic_cast<Player*>(user); // dynamic cast !!
     int productId = Utils::toInt(args[0]);
     int quantity  = Utils::toInt(args[1]);
 
@@ -38,12 +36,12 @@ bool MarketService::sell(User* user, const std::vector<std::string>& args) {
     if (!p) throw NotFoundException("Product ID " + std::to_string(productId));
 
     int income = p->price * quantity;
-    player->removeItem(p->name, quantity);
+    user->removeItem(p->name, quantity);
 
     int dummy = 0;
     std::string itemName;
-    market.sellProduct(productId, quantity, dummy, itemName); // dummy ??
-    player->addBalance(income);
+    market.sellProduct(productId, quantity, dummy, itemName);
+    user->addBalance(income);
     return true;
 }
 

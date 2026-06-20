@@ -1,5 +1,7 @@
 #include "../models/Player.h"
 #include "../utils/Exceptions.h"
+#include "../models/Barn.h"
+#include "../models/Farm.h"
 #include <iostream>
 
 Player::Player(int id_, const std::string& username_, const std::string& password_)

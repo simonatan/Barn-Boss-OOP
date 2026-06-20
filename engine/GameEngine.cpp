@@ -17,8 +17,9 @@ MarketService& GameEngine::getMarketService() { return marketService; }
 FarmService&   GameEngine::getFarmService()   { return farmService;   }
 TaskService&   GameEngine::getTaskService()   { return taskService;   }
 
-Player* GameEngine::getCurrentPlayer() {
-    return dynamic_cast<Player*>(userService.getCurrentUser()); // dynamic cast !!
+User* GameEngine::getCurrentPlayer() const {
+    User* u = userService.getCurrentUser();
+    return (u && u->isPlayer()) ? u : nullptr;
 }
 
 void GameEngine::save() {

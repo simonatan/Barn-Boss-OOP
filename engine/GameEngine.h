@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include "../models/Player.h"
 #include "../services/UserService.h"
 #include "../services/MarketService.h"
 #include "../services/FarmService.h"
@@ -30,5 +29,5 @@ public:
     FarmService&   getFarmService();
     TaskService&   getTaskService();
 
-    Player* getCurrentPlayer();
+    User* getCurrentPlayer() const;
 };
