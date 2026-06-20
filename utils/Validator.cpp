@@ -28,3 +28,8 @@ bool Validator::isValidPrice(int price) {
     if (price <= 0) { printError("Price must be positive!"); return false; }
     return true;
 }
+
+bool Validator::isValidCommandSize(std::size_t actual, std::size_t expected) {
+    if (actual != expected) { printError("Invalid command format!"); return false; }
+    return true;
+}

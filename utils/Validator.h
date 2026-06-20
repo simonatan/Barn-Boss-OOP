@@ -9,5 +9,6 @@ public:
     static bool isValidPassword(const std::string& password);
     static bool isValidQuantity(int quantity);
     static bool isValidPrice(int price);
+    static bool isValidCommandSize(std::size_t actual, std::size_t expected);
     static void printError(const std::string& message);
 };
