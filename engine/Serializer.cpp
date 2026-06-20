@@ -110,8 +110,8 @@ void Serializer::deserializeAll(std::ifstream& in,
             }
         }
         else if (tag == "FARMCAP") {
-            int plantCap  = Utils::asInt(w, 1, line);
-            int animalCap = Utils::asInt(w, 2, line);
+            size_t plantCap  = static_cast<size_t>(Utils::asInt(w, 1, line));
+            size_t animalCap = static_cast<size_t>(Utils::asInt(w, 2, line));
             if (currentPlayer) {
                 while (currentPlayer->getFarm().getPlantCapacity() < plantCap)
                     currentPlayer->getFarm().expandPlantCapacity();

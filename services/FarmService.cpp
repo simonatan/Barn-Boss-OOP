@@ -71,18 +71,22 @@ void FarmService::harvest(Player* player) {
     Farm& farm = player->getFarm();
 
     auto& plants = farm.getPlants();
-    for (int i = static_cast<int>(plants.size()) - 1; i >= 0; i--) {
-        if (plants[i].isReady()) {
-            player->addItem(plants[i].getOutput(), 1);
-            farm.removePlant(i);
+    for (auto it = plants.begin(); it != plants.end(); ) {
+        if (it->isReady()) {
+            player->addItem(it->getOutput(), 1);
+            it = plants.erase(it);
+        } else {
+            ++it;
         }
     }
 
     auto& animals = farm.getAnimals();
-    for (int i = static_cast<int>(animals.size()) - 1; i >= 0; i--) {
-        if (animals[i].isReady()) {
-            player->addItem(animals[i].getOutput(), 1);
-            farm.removeAnimal(i);
+    for (auto it = animals.begin(); it != animals.end(); ) {
+        if (it->isReady()) {
+            player->addItem(it->getOutput(), 1);
+            it = animals.erase(it);
+        } else {
+            ++it;
         }
     }
 

@@ -45,7 +45,7 @@ void Player::checkFarm() const {
 }
 
 void Player::expandCropland() {
-    int cap = farm.getPlantCapacity();
+    int cap = static_cast<int>(farm.getPlantCapacity());
     int cost = 50 * cap;
     int requiredScore = cap * 10;
 
@@ -61,7 +61,7 @@ void Player::expandCropland() {
 }
 
 void Player::expandFarmland() {
-    int cap = farm.getAnimalCapacity();
+    int cap = static_cast<int>(farm.getAnimalCapacity());
     int cost = 50 * cap;
     int requiredScore = cap * 10;
 
