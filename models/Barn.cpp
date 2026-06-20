@@ -35,7 +35,7 @@ const std::map<std::string, int>& Barn::getItems() const {
 
 void Barn::print() const {
     std::cout << "=== BARN ===\n";
-    const std::string order[] = {"Wheat Seed","Corn Seed","Chicken","Cow","Wheat","Corn","Egg","Milk"};
+    const std::string order[] = {"WheatSeed","CornSeed","Chicken","Cow","Wheat","Corn","Egg","Milk"};
     for (const auto& name : order)
         std::cout << name << ": " << getQuantity(name) << "\n";
 }

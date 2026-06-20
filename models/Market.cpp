@@ -5,8 +5,8 @@
 
 Market::Market() {
     products = {
-        {1, "Wheat Seed", 10, 20, true},
-        {2, "Corn Seed",  15, 20, true},
+        {1, "WheatSeed", 10, 20, true},
+        {2, "CornSeed",  15, 20, true},
         {3, "Chicken",    25, 10, false},
         {4, "Cow",        50,  5, false},
         {5, "Wheat",      15, 20, false},
