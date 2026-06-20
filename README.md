@@ -9,36 +9,33 @@ A console-based farm management simulation game written in C++. Players grow cro
 ```
 oop_project/
 ├── src/
-│   └── main.cpp                  
+│   └── main.cpp
 ├── engine/
-│   ├── GameEngine.h/cpp       
+│   ├── GameEngine.h/cpp          
 │   ├── CommandExecutor.h/cpp     
-│   ├── Command.h/cpp            
-│   └── Serializer.h/cpp        
+│   └── Command.h/cpp             
 ├── models/
-│   ├── User.h/cpp              
+│   ├── User.h/cpp                
 │   ├── Player.h/cpp              
 │   ├── MarketManager.h/cpp       
-│   ├── TaskManager.h/cpp        
+│   ├── TaskManager.h/cpp         
 │   ├── Farm.h/cpp                
-│   ├── Barn.h/cpp               
+│   ├── Barn.h/cpp                
 │   ├── Plant.h/cpp               
-│   ├── Animal.h/cpp             
-│   ├── Market.h/cpp              
-│   ├── Product.h/cpp            
-│   ├── Task.h/cpp              
-│   ├── TaskBoard.h/cpp          
+│   ├── Animal.h/cpp              
+│   ├── Market.h/cpp             
+│   ├── Product.h/cpp             
+│   ├── Task.h/cpp                
+│   ├── TaskBoard.h/cpp           
 │   └── Scoreboard.h/cpp          
 ├── services/
 │   ├── UserService.h/cpp         
-│   ├── MarketService.h/cpp      
-│   ├── TaskService.h/cpp         
-│   └── FarmService.h/cpp         
+│   ├── MarketService.h/cpp       
+│   └── TaskService.h/cpp         
 └── utils/
-    ├── Exceptions.h/cpp         
-    ├── IDGenerator.h/cpp         
+    ├── Exceptions.h/cpp          
     ├── Validator.h/cpp           
-    └── Utils.h/cpp               
+    └── Utils.h/cpp              
 ```
 
 ## Game Cycle Mechanic
