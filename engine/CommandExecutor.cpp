@@ -2,6 +2,7 @@
 #include "../engine/GameEngine.h"
 #include "../models/Scoreboard.h"
 #include "../utils/Exceptions.h"
+#include "../services/FarmService.h"
 #include <iostream>
 
 CommandExecutor::CommandExecutor(GameEngine& engine_) : engine(engine_) {}
@@ -69,14 +70,14 @@ void CommandExecutor::execute(const Command& cmd) {
                 p->advanceCycle();
     }
     else if (cmd.name == "sowPlant") {
-        if (engine.getFarmService().sowPlant(requirePlayer(), cmd.args))
+        if (FarmService::sowPlant(requirePlayer(), cmd.args))
             requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "addAnimal") {
-        if (engine.getFarmService().addAnimal(requirePlayer(), cmd.args)) requirePlayer()->advanceCycle();
+        if (FarmService::addAnimal(requirePlayer(), cmd.args)) requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "harvest") {
-        engine.getFarmService().harvest(requirePlayer());
+        FarmService::harvest(requirePlayer());
     }
     else if (cmd.name == "expandCropland") {
         auto* p = requirePlayer();
