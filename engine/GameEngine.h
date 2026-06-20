@@ -3,7 +3,6 @@
 #include <memory>
 #include "../services/UserService.h"
 #include "../services/MarketService.h"
-#include "../services/FarmService.h"
 #include "../services/TaskService.h"
 
 class CommandExecutor;
@@ -11,7 +10,6 @@ class CommandExecutor;
 class GameEngine {
     UserService   userService;
     MarketService marketService;
-    FarmService   farmService;
     TaskService   taskService;
     std::unique_ptr<CommandExecutor> executor;
 
@@ -23,11 +21,11 @@ public:
     ~GameEngine();
 
     void run();
+    void resetGame();
 
     UserService&   getUserService();
     MarketService& getMarketService();
-    FarmService&   getFarmService();
     TaskService&   getTaskService();
 
-    User* getCurrentPlayer() const;
+    [[nodiscard]] Player* getCurrentPlayer() const;
 };

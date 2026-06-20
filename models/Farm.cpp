@@ -5,14 +5,14 @@ Farm::Farm() : plantCapacity(3), animalCapacity(3) {}
 
 bool Farm::addPlant(const Plant& plant) {
     if (plants.size() >= plantCapacity)
-        throw CapacityFullException("Cropland is full.");
+        throw CapacityFullException("plant: Cropland is full.");
     plants.push_back(plant);
     return true;
 }
 
 bool Farm::addAnimal(const Animal& animal) {
     if (animals.size() >= animalCapacity)
-        throw CapacityFullException("Farmland is full.");
+        throw CapacityFullException("add animal: Farmland is full.");
     animals.push_back(animal);
     return true;
 }

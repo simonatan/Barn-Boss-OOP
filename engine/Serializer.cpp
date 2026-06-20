@@ -1,45 +1,49 @@
 #include "../engine/Serializer.h"
-#include "../models/MarketManager.h"
-#include "../models/TaskManager.h"
 #include "../utils/Utils.h"
 #include <stdexcept>
 
 void Serializer::serializeAll(std::ofstream& out,
-                               const std::vector<User*>& users,
+                               const std::vector<std::unique_ptr<Player>>& players,
+                               const MarketManager* marketManager,
+                               const TaskManager* taskManager,
                                const Market& market,
                                const TaskBoard& taskBoard) {
 
     int maxId = 0;
-    for (auto* u : users) if (u->getId() > maxId) maxId = u->getId();
+    for (const auto& p : players) if (p->getId() > maxId) maxId = p->getId();
+    if (marketManager && marketManager->getId() > maxId) maxId = marketManager->getId();
+    if (taskManager   && taskManager->getId()   > maxId) maxId = taskManager->getId();
     out << "NEXT_ID " << (maxId + 1) << "\n";
 
-    for (auto* u : users) {
-        if (u->getType() == "Player") {
-            out << "USER Player " << u->getId() << " " << u->getUsername()
-                << " " << u->getPassword() << " " << u->getBalance()
-                << " " << u->getScore() << " " << u->getCycle() << "\n";
+    for (const auto& p : players) {
+        out << "USER Player " << p->getId() << " " << p->getUsername()
+            << " " << p->getPassword() << " " << p->getBalance()
+            << " " << p->getScore() << " " << p->getCycle() << "\n";
 
-            out << "BARN";
-            for (const auto& kv : u->getBarn().getItems())
-                out << " " << kv.first << " " << kv.second;
-            out << "\n";
+        out << "BARN";
+        for (const auto& kv : p->getBarn().getItems())
+            out << " " << kv.first << " " << kv.second;
+        out << "\n";
 
-            out << "FARMCAP " << u->getFarm().getPlantCapacity()
-                << " "        << u->getFarm().getAnimalCapacity() << "\n";
+        out << "FARMCAP " << p->getFarm().getPlantCapacity()
+            << " "        << p->getFarm().getAnimalCapacity() << "\n";
 
-            for (const auto& pl : u->getFarm().getPlants())
-                out << "PLANT " << pl.getType() << " " << pl.getCurrentCycle()
-                    << " " << pl.getRequiredCycle() << " " << pl.getOutput() << "\n";
+        for (const auto& pl : p->getFarm().getPlants())
+            out << "PLANT " << pl.getType() << " " << pl.getCurrentCycle()
+                << " " << pl.getRequiredCycle() << " " << pl.getOutput() << "\n";
 
-            for (const auto& an : u->getFarm().getAnimals())
-                out << "ANIMAL " << an.getType() << " " << an.getCurrentCycle()
-                    << " " << an.getRequiredCycle() << " " << an.getOutput() << "\n";
-        } else if (u->getType() == "MarketManager") {
-            out << "USER MarketManager " << u->getId() << " " << u->getUsername() << " " << u->getPassword() << "\n";
-        } else if (u->getType() == "TaskManager") {
-            out << "USER TaskManager "   << u->getId() << " " << u->getUsername() << " " << u->getPassword() << "\n";
-        }
+        for (const auto& an : p->getFarm().getAnimals())
+            out << "ANIMAL " << an.getType() << " " << an.getCurrentCycle()
+                << " " << an.getRequiredCycle() << " " << an.getOutput() << "\n";
     }
+
+    if (marketManager)
+        out << "USER MarketManager " << marketManager->getId() << " "
+            << marketManager->getUsername() << " " << marketManager->getPassword() << "\n";
+
+    if (taskManager)
+        out << "USER TaskManager " << taskManager->getId() << " "
+            << taskManager->getUsername() << " " << taskManager->getPassword() << "\n";
 
     for (const auto& p : market.getProducts())
         out << "MARKET " << p.id << " " << p.name << " " << p.price << " " << p.quantity << "\n";
@@ -50,16 +54,18 @@ void Serializer::serializeAll(std::ofstream& out,
 }
 
 void Serializer::deserializeAll(std::ifstream& in,
-                                 std::vector<std::unique_ptr<User>>& users,
+                                 std::vector<std::unique_ptr<Player>>& players,
+                                 std::unique_ptr<MarketManager>& marketManager,
+                                 std::unique_ptr<TaskManager>& taskManager,
                                  Market& market,
                                  TaskBoard& taskBoard,
                                  int& nextUserId) {
-    users.clear();
-    market.clearProducts();
-    taskBoard.clearTasks();
-    MarketManager::resetTracker();
-    TaskManager::resetTracker();
+    players.clear();
+    marketManager.reset();
+    taskManager.reset();
 
+    bool marketRestored   = false;
+    bool taskBoardRestored = false;
     Player* currentPlayer = nullptr;
 
     std::string line;
@@ -88,17 +94,17 @@ void Serializer::deserializeAll(std::ifstream& in,
                 p->addScore(score);
                 p->setCycle(cycle);
                 currentPlayer = p.get();
-                users.push_back(std::move(p));
+                players.push_back(std::move(p));
             } else if (type == "MarketManager") {
                 int id = Utils::asInt(w, 2, line);
                 std::string username = w[3];
                 std::string password = w[4];
-                users.push_back(std::make_unique<MarketManager>(id, username, password));
+                marketManager = std::make_unique<MarketManager>(id, username, password);
             } else if (type == "TaskManager") {
                 int id = Utils::asInt(w, 2, line);
                 std::string username = w[3];
                 std::string password = w[4];
-                users.push_back(std::make_unique<TaskManager>(id, username, password));
+                taskManager = std::make_unique<TaskManager>(id, username, password);
             }
         }
         else if (tag == "BARN") {
@@ -110,8 +116,8 @@ void Serializer::deserializeAll(std::ifstream& in,
             }
         }
         else if (tag == "FARMCAP") {
-            size_t plantCap  = static_cast<size_t>(Utils::asInt(w, 1, line));
-            size_t animalCap = static_cast<size_t>(Utils::asInt(w, 2, line));
+            std::size_t plantCap  = static_cast<std::size_t>(Utils::asInt(w, 1, line));
+            std::size_t animalCap = static_cast<std::size_t>(Utils::asInt(w, 2, line));
             if (currentPlayer) {
                 while (currentPlayer->getFarm().getPlantCapacity() < plantCap)
                     currentPlayer->getFarm().expandPlantCapacity();
@@ -142,6 +148,10 @@ void Serializer::deserializeAll(std::ifstream& in,
             }
         }
         else if (tag == "MARKET") {
+            if (!marketRestored) {
+                market.clearProducts();
+                marketRestored = true;
+            }
             int id           = Utils::asInt(w, 1, line);
             std::string name = w[2];
             int price        = Utils::asInt(w, 3, line);
@@ -149,6 +159,10 @@ void Serializer::deserializeAll(std::ifstream& in,
             market.setProduct(id, name, price, quantity);
         }
         else if (tag == "TASK") {
+            if (!taskBoardRestored) {
+                taskBoard.clearTasks();
+                taskBoardRestored = true;
+            }
             int id              = Utils::asInt(w, 1, line);
             std::string product = w[2];
             int quantity        = Utils::asInt(w, 3, line);

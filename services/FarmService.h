@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <string>
-#include "../models/User.h"
+#include "../models/Player.h"
 
 class FarmService {
 public:
     FarmService() = default;
-    static bool sowPlant(User* user, const std::vector<std::string>& args);
-    static bool addAnimal(User* user, const std::vector<std::string>& args);
-    static void harvest(User* user);
+    static bool sowPlant(Player* player, const std::vector<std::string>& args);
+    static bool addAnimal(Player* player, const std::vector<std::string>& args);
+    static void harvest(Player* player);
 };

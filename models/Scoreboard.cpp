@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 
-static bool comparePlayers(const User* a, const User* b) {
+static bool comparePlayers(const Player* a, const Player* b) {
     if (a->getScore() != b->getScore())
         return a->getScore() > b->getScore();
     if (a->getBalance() != b->getBalance())
@@ -10,8 +10,8 @@ static bool comparePlayers(const User* a, const User* b) {
     return a->getId() < b->getId();
 }
 
-void Scoreboard::showScoreboard(const std::vector<User*>& players) {
-    std::vector<User*> sorted = players;
+void Scoreboard::showScoreboard(const std::vector<Player*>& players) {
+    std::vector<Player*> sorted = players;
     std::sort(sorted.begin(), sorted.end(), comparePlayers);
 
     std::cout << "=== SCOREBOARD ===\n";
@@ -23,4 +23,3 @@ void Scoreboard::showScoreboard(const std::vector<User*>& players) {
         rank++;
     }
 }
-

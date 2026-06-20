@@ -39,7 +39,3 @@ void Barn::print() const {
     for (const auto& name : order)
         std::cout << name << ": " << getQuantity(name) << "\n";
 }
-
-void Barn::clear() {
-    items.clear();
-}

@@ -13,5 +13,5 @@ int Task::getRewardScore() const { return rewardScore; }
 
 void Task::print() const {
     std::cout << id << ". Deliver " << requiredQuantity << " " << requiredProduct
-              << " Reward: " << rewardBalance << " Balance, " << rewardScore << " Score\n";
+              << " → Reward: " << rewardBalance << " Balance, " << rewardScore << " Score\n";
 }

@@ -7,8 +7,8 @@
 class Farm {
  std::vector<Plant> plants;
  std::vector<Animal> animals;
- size_t plantCapacity;
- size_t animalCapacity;
+ std::size_t plantCapacity;
+ std::size_t animalCapacity;
 
 public:
  Farm();
@@ -24,9 +24,9 @@ public:
  std::vector<Plant>& getPlants();
  std::vector<Animal>& getAnimals();
 
- [[nodiscard]] size_t getPlantCapacity() const;
- [[nodiscard]] size_t getAnimalCapacity() const;
+ std::size_t getPlantCapacity() const;
+ std::size_t getAnimalCapacity() const;
 
- [[nodiscard]] size_t getPlantCount() const;
- [[nodiscard]] size_t getAnimalCount() const;
+ std::size_t getPlantCount() const;
+ std::size_t getAnimalCount() const;
 };

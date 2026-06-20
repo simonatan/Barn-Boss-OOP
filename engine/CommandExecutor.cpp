@@ -7,10 +7,27 @@
 
 CommandExecutor::CommandExecutor(GameEngine& engine_) : engine(engine_) {}
 
-User* CommandExecutor::requirePlayer() const {
-    User* p = engine.getCurrentPlayer();
+void CommandExecutor::requireLoggedIn() const {
+    if (!engine.getUserService().getCurrentUser())
+        throw AuthenticationException("Not logged in!");
+}
+
+Player* CommandExecutor::requirePlayer() const {
+    Player* p = engine.getCurrentPlayer();
     if (!p) throw AuthenticationException("Not logged in as Player!");
     return p;
+}
+
+MarketManager* CommandExecutor::requireMarketManager() const {
+    MarketManager* m = engine.getUserService().getCurrentMarketManager();
+    if (!m) throw AuthenticationException("Not logged in as MarketManager!");
+    return m;
+}
+
+TaskManager* CommandExecutor::requireTaskManager() const {
+    TaskManager* t = engine.getUserService().getCurrentTaskManager();
+    if (!t) throw AuthenticationException("Not logged in as TaskManager!");
+    return t;
 }
 
 void CommandExecutor::execute(const Command& cmd) {
@@ -20,6 +37,7 @@ void CommandExecutor::execute(const Command& cmd) {
     else if (cmd.name == "login") { engine.getUserService().login(cmd.args); }
     else if (cmd.name == "logout") { engine.getUserService().logout(); }
     else if (cmd.name == "changePassword") { engine.getUserService().changePassword(cmd.args); }
+    else if (cmd.name == "reset") { engine.resetGame(); }
 
     // ---------- INFO ----------
     else if (cmd.name == "profileInfo") {
@@ -28,53 +46,49 @@ void CommandExecutor::execute(const Command& cmd) {
         u->profileInfo();
     }
     else if (cmd.name == "checkBalance") { std::cout << "Current Balance: " << requirePlayer()->getBalance() << "\n"; }
-    else if (cmd.name == "checkScore") { std::cout << "Current Score: "   << requirePlayer()->getScore()   << "\n"; }
-    else if (cmd.name == "checkBarn") { requirePlayer()->printBarn(); }
-    else if (cmd.name == "checkFarm") { requirePlayer()->checkFarm(); }
-    else if (cmd.name == "openMarketCatalog") { engine.getMarketService().openCatalog(); }
+    else if (cmd.name == "checkScore")   { std::cout << "Current Score: "   << requirePlayer()->getScore()   << "\n"; }
+    else if (cmd.name == "checkBarn")    { requirePlayer()->printBarn(); }
+    else if (cmd.name == "checkFarm")    { requirePlayer()->checkFarm(); }
+    else if (cmd.name == "openMarketCatalog") { requireLoggedIn(); engine.getMarketService().openCatalog(); }
     else if (cmd.name == "showTaskBoard" || cmd.name == "showTasks") {
-        engine.getTaskService().showTasks();
+        requireLoggedIn(); engine.getTaskService().showTasks();
     }
     else if (cmd.name == "showScoreboard") {
-        std::vector<User*> players;
-        for (auto* u : engine.getUserService().getAllUsers())
-            if (u->isPlayer()) players.push_back(u);
-        Scoreboard::showScoreboard(players);
+        requireLoggedIn(); Scoreboard::showScoreboard(engine.getUserService().getPlayers());
     }
 
     // ---------- MARKET MANAGER ----------
     else if (cmd.name == "restock") {
-        engine.getMarketService().restock(engine.getUserService().getCurrentUser(), cmd.args);
+        engine.getMarketService().restock(requireMarketManager(), cmd.args);
     }
     else if (cmd.name == "changePrice") {
-        engine.getMarketService().changePrice(engine.getUserService().getCurrentUser(), cmd.args);
+        engine.getMarketService().changePrice(requireMarketManager(), cmd.args);
     }
 
     // ---------- TASK MANAGER ----------
     else if (cmd.name == "addTask") {
-        engine.getTaskService().addTask(engine.getUserService().getCurrentUser(), cmd.args);
+        engine.getTaskService().addTask(requireTaskManager(), cmd.args);
     }
     else if (cmd.name == "removeTask") {
-        engine.getTaskService().removeTask(engine.getUserService().getCurrentUser(), cmd.args);
+        engine.getTaskService().removeTask(requireTaskManager(), cmd.args);
     }
 
     // ---------- PLAYER ACTIONS ----------
     else if (cmd.name == "buyItem") {
-        if (engine.getMarketService().buy(engine.getUserService().getCurrentUser(), cmd.args))
-            if (auto* p = engine.getCurrentPlayer())
-                p->advanceCycle();
+        if (engine.getMarketService().buy(requirePlayer(), cmd.args))
+            requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "sellItem") {
-        if (engine.getMarketService().sell(engine.getUserService().getCurrentUser(), cmd.args))
-            if (auto* p = engine.getCurrentPlayer())
-                p->advanceCycle();
+        if (engine.getMarketService().sell(requirePlayer(), cmd.args))
+            requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "sowPlant") {
         if (FarmService::sowPlant(requirePlayer(), cmd.args))
             requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "addAnimal") {
-        if (FarmService::addAnimal(requirePlayer(), cmd.args)) requirePlayer()->advanceCycle();
+        if (FarmService::addAnimal(requirePlayer(), cmd.args))
+            requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "harvest") {
         FarmService::harvest(requirePlayer());

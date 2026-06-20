@@ -16,5 +16,4 @@ public:
     const std::map<std::string, int>& getItems() const;
 
     void print() const;
-    void clear();
 };

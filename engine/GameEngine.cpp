@@ -1,6 +1,7 @@
 #include "../engine/GameEngine.h"
 #include "../engine/CommandExecutor.h"
 #include "../engine/Serializer.h"
+#include "../utils/IDGenerator.h"
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -14,19 +15,27 @@ GameEngine::~GameEngine() = default;
 
 UserService&   GameEngine::getUserService()   { return userService;   }
 MarketService& GameEngine::getMarketService() { return marketService; }
-FarmService&   GameEngine::getFarmService()   { return farmService;   }
 TaskService&   GameEngine::getTaskService()   { return taskService;   }
 
-User* GameEngine::getCurrentPlayer() const {
-    User* u = userService.getCurrentUser();
-    return (u && u->isPlayer()) ? u : nullptr;
+Player* GameEngine::getCurrentPlayer() const {
+    return userService.getCurrentPlayer();
+}
+
+void GameEngine::resetGame() {
+    userService.clearAll();
+    marketService.reset();
+    taskService.reset();
+    IDGenerator::reset();
+    std::cout << "Game reset successfully!\n";
 }
 
 void GameEngine::save() {
     std::ofstream out(SAVE_FILE);
     if (!out.is_open()) throw std::runtime_error("Could not open save file: " + SAVE_FILE);
     Serializer::serializeAll(out,
-            userService.getAllUsers(),
+            userService.getPlayersOwned(),
+            userService.getMarketManagerOwned(),
+            userService.getTaskManagerOwned(),
             marketService.getMarket(),
             taskService.getTaskBoard());
 }
@@ -35,12 +44,27 @@ void GameEngine::load() {
     std::ifstream in(SAVE_FILE);
     if (!in.is_open()) return;
 
+    userService.clearAll();
+
+    std::vector<std::unique_ptr<Player>> loadedPlayers;
+    std::unique_ptr<MarketManager> loadedMarketManager;
+    std::unique_ptr<TaskManager>   loadedTaskManager;
     int nextId = 1;
+
     Serializer::deserializeAll(in,
-                                userService.getUsersRef(),
+                                loadedPlayers,
+                                loadedMarketManager,
+                                loadedTaskManager,
                                 marketService.getMarket(),
                                 taskService.getTaskBoard(),
                                 nextId);
+
+    for (auto& p : loadedPlayers)
+        userService.addPlayer(std::move(p));
+    if (loadedMarketManager)
+        userService.setMarketManager(std::move(loadedMarketManager));
+    if (loadedTaskManager)
+        userService.setTaskManager(std::move(loadedTaskManager));
     userService.resetNextId(nextId);
 }
 

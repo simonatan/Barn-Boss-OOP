@@ -6,9 +6,8 @@
 
 void TaskService::showTasks() { taskBoard.showTasks(); }
 
-void TaskService::addTask(User* user, const std::vector<std::string>& args) {
-    if (!user || user->getType() != "TaskManager")
-        throw AuthenticationException("Only TaskManagers can add tasks!");
+void TaskService::addTask(TaskManager* manager, const std::vector<std::string>& args) {
+    if (!manager) throw AuthenticationException("Only TaskManagers can add tasks!");
     if (!Validator::isValidCommandSize(args.size(), 4)) return;
 
     int qty = Utils::toInt(args[1]), rwdBal = Utils::toInt(args[2]), rwdScr = Utils::toInt(args[3]);
@@ -17,9 +16,8 @@ void TaskService::addTask(User* user, const std::vector<std::string>& args) {
     std::cout << "Task added successfully!\n";
 }
 
-void TaskService::removeTask(User* user, const std::vector<std::string>& args) {
-    if (!user || user->getType() != "TaskManager")
-        throw AuthenticationException("Only TaskManagers can remove tasks!");
+void TaskService::removeTask(TaskManager* manager, const std::vector<std::string>& args) {
+    if (!manager) throw AuthenticationException("Only TaskManagers can remove tasks!");
     if (!Validator::isValidCommandSize(args.size(), 1)) return;
     taskBoard.removeTask(Utils::toInt(args[0])); // throws NotFoundException
     std::cout << "Task removed successfully!\n";
@@ -32,3 +30,4 @@ bool TaskService::completeTask(Player* player, const std::vector<std::string>& a
 }
 
 TaskBoard& TaskService::getTaskBoard() { return taskBoard; }
+void       TaskService::reset()        { taskBoard = TaskBoard(); }
