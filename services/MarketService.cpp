@@ -18,7 +18,7 @@ bool MarketService::buy(User* user, const std::vector<std::string>& args) {
     int balance = player->getBalance();
     std::string itemName;
 
-    market.buyProduct(productId, quantity, balance, itemName);
+    if (!market.buyProduct(productId, quantity, balance, itemName)) return false;
 
     player->removeBalance(player->getBalance() - balance);
     player->addItem(itemName, quantity);
