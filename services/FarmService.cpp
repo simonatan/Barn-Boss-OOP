@@ -1,12 +1,15 @@
 #include "../services/FarmService.h"
+#include "../models/User.h"
 #include "../utils/Exceptions.h"
 #include "../utils/Utils.h"
 #include "../models/Plant.h"
 #include "../models/Animal.h"
+#include "Barn.h"
+#include "Farm.h"
 #include <iostream>
 
-bool FarmService::sowPlant(Player* player, const std::vector<std::string>& args) {
-    if (!player) throw AuthenticationException("Not logged in!");
+bool FarmService::sowPlant(User* user, const std::vector<std::string>& args) {
+    if (!user) throw AuthenticationException("Not logged in!");
     if (args.empty()) throw InvalidCommandException("sowPlant needs a seed ID (1=Wheat, 2=Corn).");
 
     int seedId = Utils::toInt(args[0]);
@@ -25,18 +28,18 @@ bool FarmService::sowPlant(Player* player, const std::vector<std::string>& args)
     }
     else throw NotFoundException("Seed ID " + std::to_string(seedId));
 
-    if (!player->getBarn().hasItem(seedName, 1)) throw NotEnoughItemsException(seedName);
+    if (!user->getBarn().hasItem(seedName, 1)) throw NotEnoughItemsException(seedName);
 
     Plant newPlant(seedId, plantOutput, requiredCycles, plantOutput);
-    player->getFarm().addPlant(newPlant);
-    player->removeItem(seedName, 1);
+    user->getFarm().addPlant(newPlant);
+    user->removeItem(seedName, 1);
 
     std::cout << "Plants planted successfully!\n";
     return true;
 }
 
-bool FarmService::addAnimal(Player* player, const std::vector<std::string>& args) {
-    if (!player) throw AuthenticationException("Not logged in!");
+bool FarmService::addAnimal(User* user, const std::vector<std::string>& args) {
+    if (!user) throw AuthenticationException("Not logged in!");
     if (args.empty()) throw InvalidCommandException("addAnimal needs an animal ID (3=Chicken, 4=Cow).");
 
     int animalId = Utils::toInt(args[0]);
@@ -55,25 +58,25 @@ bool FarmService::addAnimal(Player* player, const std::vector<std::string>& args
     }
     else throw NotFoundException("Animal ID " + std::to_string(animalId));
 
-    if (!player->getBarn().hasItem(animalName, 1)) throw NotEnoughItemsException(animalName);
+    if (!user->getBarn().hasItem(animalName, 1)) throw NotEnoughItemsException(animalName);
 
     Animal newAnimal(animalId, animalName, requiredCycles, animalOutput);
-    player->getFarm().addAnimal(newAnimal);
-    player->removeItem(animalName, 1);
+    user->getFarm().addAnimal(newAnimal);
+    user->removeItem(animalName, 1);
 
     std::cout << "Animals added successfully!\n";
     return true;
 }
 
-void FarmService::harvest(Player* player) {
-    if (!player) throw AuthenticationException("Not logged in!");
+void FarmService::harvest(User* user) {
+    if (!user) throw AuthenticationException("Not logged in!");
 
-    Farm& farm = player->getFarm();
+    Farm& farm = user->getFarm();
 
     auto& plants = farm.getPlants();
     for (auto it = plants.begin(); it != plants.end(); ) {
         if (it->isReady()) {
-            player->addItem(it->getOutput(), 1);
+            user->addItem(it->getOutput(), 1);
             it = plants.erase(it);
         } else {
             ++it;
@@ -83,7 +86,7 @@ void FarmService::harvest(Player* player) {
     auto& animals = farm.getAnimals();
     for (auto it = animals.begin(); it != animals.end(); ) {
         if (it->isReady()) {
-            player->addItem(it->getOutput(), 1);
+            user->addItem(it->getOutput(), 1);
             it = animals.erase(it);
         } else {
             ++it;
