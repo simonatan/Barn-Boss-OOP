@@ -11,6 +11,18 @@ public:
     const char* what() const noexcept override { return message.c_str(); }
 };
 
+class InvalidCommandException : public GameException {
+public:
+    explicit InvalidCommandException(const std::string& cmd = "unknown")
+        : GameException("Invalid command: " + cmd) {}
+};
+
+class AuthenticationException : public GameException {
+public:
+    explicit AuthenticationException(const std::string& msg = "Authentication required!")
+        : GameException(msg) {}
+};
+
 class NotFoundException : public GameException {
 public:
     explicit NotFoundException(const std::string& item = "Item")
