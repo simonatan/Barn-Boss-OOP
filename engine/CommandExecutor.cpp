@@ -77,7 +77,6 @@ void CommandExecutor::execute(const Command& cmd) {
     }
     else if (cmd.name == "harvest") {
         engine.getFarmService().harvest(requirePlayer());
-        requirePlayer()->advanceCycle();
     }
     else if (cmd.name == "expandCropland") {
         auto* p = requirePlayer();
