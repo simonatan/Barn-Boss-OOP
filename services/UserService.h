@@ -17,6 +17,8 @@ class UserService {
     MarketManager* currentMarketManager;
     TaskManager*   currentTaskManager;
 
+    static int nextId;
+
 public:
     UserService();
 

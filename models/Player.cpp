@@ -2,6 +2,8 @@
 #include "../utils/Exceptions.h"
 #include "../models/Barn.h"
 #include "../models/Farm.h"
+#include "../models/Plant.h"
+#include "../models/Animal.h"
 #include <iostream>
 
 Player::Player(int id_, const std::string& username_, const std::string& password_)
@@ -74,4 +76,46 @@ void Player::expandFarmland() {
     balance -= cost;
     farm.expandAnimalCapacity();
     std::cout << "Farmland expanded successfully! New capacity: " << farm.getAnimalCapacity() << "\n";
+}
+
+bool Player::sowPlant(int seedId) {
+    std::string seedName, plantOutput;
+    int requiredCycles;
+    if      (seedId == 1) { seedName = "WheatSeed"; plantOutput = "Wheat"; requiredCycles = 3; }
+    else if (seedId == 2) { seedName = "CornSeed";  plantOutput = "Corn";  requiredCycles = 4; }
+    else throw NotFoundException("Seed ID " + std::to_string(seedId));
+
+    if (!barn.hasItem(seedName, 1)) throw NotEnoughItemsException(seedName);
+    farm.addPlant(Plant(seedId, plantOutput, requiredCycles, plantOutput));
+    barn.removeItem(seedName, 1);
+    std::cout << "Plants planted successfully!\n";
+    return true;
+}
+
+bool Player::addAnimal(int animalId) {
+    std::string animalName, animalOutput;
+    int requiredCycles;
+    if      (animalId == 3) { animalName = "Chicken"; animalOutput = "Egg";  requiredCycles = 3; }
+    else if (animalId == 4) { animalName = "Cow";     animalOutput = "Milk"; requiredCycles = 5; }
+    else throw NotFoundException("Animal ID " + std::to_string(animalId));
+
+    if (!barn.hasItem(animalName, 1)) throw NotEnoughItemsException(animalName);
+    farm.addAnimal(Animal(animalId, animalName, requiredCycles, animalOutput));
+    barn.removeItem(animalName, 1);
+    std::cout << "Animals added successfully!\n";
+    return true;
+}
+
+void Player::harvest() {
+    auto& plants = farm.getPlants();
+    for (auto it = plants.begin(); it != plants.end(); ) {
+        if (it->isReady()) { barn.addItem(it->getOutput(), 1); it = plants.erase(it); }
+        else ++it;
+    }
+    auto& animals = farm.getAnimals();
+    for (auto it = animals.begin(); it != animals.end(); ) {
+        if (it->isReady()) { barn.addItem(it->getOutput(), 1); it = animals.erase(it); }
+        else ++it;
+    }
+    std::cout << "Harvest completed!\n";
 }

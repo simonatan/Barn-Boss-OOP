@@ -38,4 +38,7 @@ public:
     void checkFarm() const;
     void expandCropland();
     void expandFarmland();
+    bool sowPlant(int seedId);
+    bool addAnimal(int animalId);
+    void harvest();
 };

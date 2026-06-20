@@ -1,7 +1,6 @@
 #include "../engine/GameEngine.h"
 #include "../engine/CommandExecutor.h"
 #include "../engine/Serializer.h"
-#include "../utils/IDGenerator.h"
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -23,9 +22,9 @@ Player* GameEngine::getCurrentPlayer() const {
 
 void GameEngine::resetGame() {
     userService.clearAll();
+    userService.resetNextId(1);
     marketService.reset();
     taskService.reset();
-    IDGenerator::reset();
     std::cout << "Game reset successfully!\n";
 }
 

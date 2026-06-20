@@ -1,7 +1,8 @@
 #include "../services/UserService.h"
-#include "../utils/IDGenerator.h"
 #include "../utils/Validator.h"
 #include <iostream>
+
+int UserService::nextId = 1;
 
 UserService::UserService()
     : currentUser(nullptr), currentPlayer(nullptr),
@@ -23,7 +24,7 @@ void UserService::registerUser(const std::vector<std::string>& args) {
     if (taskManager && taskManager->getUsername() == username)
         { std::cout << "Username already exists!\n"; return; }
 
-    int newId = IDGenerator::generateId();
+    int newId = nextId++;
 
     if (type == "Player") {
         players.push_back(std::make_unique<Player>(newId, username, password));
@@ -132,7 +133,4 @@ const std::vector<std::unique_ptr<Player>>& UserService::getPlayersOwned()      
 const MarketManager*                         UserService::getMarketManagerOwned() const { return marketManager.get(); }
 const TaskManager*                           UserService::getTaskManagerOwned()   const { return taskManager.get(); }
 
-void UserService::resetNextId(int id) {
-    IDGenerator::reset();
-    for (int i = 1; i < id; i++) IDGenerator::generateId();
-}
+void UserService::resetNextId(int id) { nextId = id; }
