@@ -8,10 +8,10 @@ class TaskBoard {
     std::vector<Task> tasks;
     int nextId;
 
+    Task* findTask(int id);
+
 public:
     TaskBoard();
-
-    Task* findTask(int id);
     void showTasks() const;
     void addTask(const std::string& product, int quantity, int rewardBalance, int rewardScore);
     void addTaskWithId(int id, const std::string& product, int quantity, int rewardBalance, int rewardScore);
