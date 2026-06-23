@@ -12,13 +12,15 @@ bool MarketService::buy(Player* player, const std::vector<std::string>& args) {
 
     int productId = Utils::toInt(args[0]);
     int quantity  = Utils::toInt(args[1]);
-    int balance   = player->getBalance();
-    std::string itemName;
+    if (!Validator::isValidQuantity(quantity)) return false;
 
-    if (!market.buyProduct(productId, quantity, balance, itemName)) return false;
+    Product& p = market.findProduct(productId);
+    int cost = p.price * quantity;
+    if (player->getBalance() < cost) throw InsufficientFundsException(cost, player->getBalance());
 
-    player->removeBalance(player->getBalance() - balance);
-    player->addItem(itemName, quantity);
+    market.buyProduct(productId, quantity);
+    player->removeBalance(cost);
+    player->addItem(p.name, quantity);
     return true;
 }
 

@@ -30,20 +30,12 @@ void Market::showCatalog() const {
                   << " | Price: " << p.price << "\n";
 }
 
-bool Market::buyProduct(int id, int quantity, int& playerMoney, std::string& outItemName) {
-    if (!Validator::isValidQuantity(quantity)) return false;
+void Market::buyProduct(int id, int quantity) {
     Product& p = findProduct(id);
     if (p.quantity < quantity)
         throw NotEnoughItemsException(p.name + " in stock");
-    int cost = p.price * quantity;
-    if (playerMoney < cost)
-        throw InsufficientFundsException(cost, playerMoney);
-
     p.quantity -= quantity;
-    playerMoney -= cost;
-    outItemName = p.name;
     std::cout << "The purchase was successful!\n";
-    return true;
 }
 
 void Market::sellProduct(int id, int quantity) {
