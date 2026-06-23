@@ -16,10 +16,10 @@ Market::Market() {
     };
 }
 
-Product* Market::findProduct(int id) {
+Product& Market::findProduct(int id) {
     for (auto& p : products)
-        if (p.id == id) return &p;
-    return nullptr;
+        if (p.id == id) return p;
+    throw NotFoundException("Product ID " + std::to_string(id));
 }
 
 void Market::showCatalog() const {
@@ -32,47 +32,41 @@ void Market::showCatalog() const {
 
 bool Market::buyProduct(int id, int quantity, int& playerMoney, std::string& outItemName) {
     if (!Validator::isValidQuantity(quantity)) return false;
-    Product* p = findProduct(id);
-    if (!p)
-        throw NotFoundException("Product ID " + std::to_string(id));
-    if (p->quantity < quantity)
-        throw NotEnoughItemsException(p->name + " in stock");
-    int cost = p->price * quantity;
+    Product& p = findProduct(id);
+    if (p.quantity < quantity)
+        throw NotEnoughItemsException(p.name + " in stock");
+    int cost = p.price * quantity;
     if (playerMoney < cost)
         throw InsufficientFundsException(cost, playerMoney);
 
-    p->quantity -= quantity;
+    p.quantity -= quantity;
     playerMoney -= cost;
-    outItemName = p->name;
+    outItemName = p.name;
     std::cout << "The purchase was successful!\n";
     return true;
 }
 
 bool Market::sellProduct(int id, int quantity, int& playerMoney, std::string& outItemName) {
     if (!Validator::isValidQuantity(quantity)) return false;
-    Product* p = findProduct(id);
-    if (!p) throw NotFoundException("Product ID " + std::to_string(id));
-
-    p->quantity += quantity;
-    playerMoney += p->price * quantity;
-    outItemName  = p->name;
+    Product& p = findProduct(id);
+    p.quantity += quantity;
+    playerMoney += p.price * quantity;
+    outItemName  = p.name;
     std::cout << "The sale was successful!\n";
     return true;
 }
 
 void Market::restock(int id, int quantity) {
     if (!Validator::isValidQuantity(quantity)) return;
-    Product* p = findProduct(id);
-    if (!p) throw NotFoundException("Product ID " + std::to_string(id));
-    p->quantity += quantity;
+    Product& p = findProduct(id);
+    p.quantity += quantity;
     std::cout << "Product restocked successfully!\n";
 }
 
 void Market::changePrice(int id, int newPrice) {
     if (!Validator::isValidPrice(newPrice)) return;
-    Product* p = findProduct(id);
-    if (!p) throw NotFoundException("Product ID " + std::to_string(id));
-    p->price = newPrice;
+    Product& p = findProduct(id);
+    p.price = newPrice;
     std::cout << "Price changed successfully!\n";
 }
 
@@ -81,11 +75,7 @@ void Market::clearProducts() { products.clear(); }
 
 void Market::setProduct(int id, const std::string& name, int price, int quantity) {
     for (auto& p : products) {
-        if (p.id == id) {
-            p.price = price;
-            p.quantity = quantity;
-            return;
-        }
+        if (p.id == id) { p.price = price; p.quantity = quantity; return; }
     }
     products.push_back({id, name, price, quantity});
 }

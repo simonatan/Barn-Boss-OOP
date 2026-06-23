@@ -16,7 +16,7 @@ public:
     void restock(int id, int quantity);
     void changePrice(int id, int newPrice);
 
-    Product* findProduct(int id);
+    Product& findProduct(int id);
     [[nodiscard]] const std::vector<Product>& getProducts() const;
     void clearProducts();
     void setProduct(int id, const std::string& name, int price, int quantity);

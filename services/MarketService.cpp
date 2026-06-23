@@ -29,11 +29,9 @@ bool MarketService::sell(Player* player, const std::vector<std::string>& args) {
     int productId = Utils::toInt(args[0]);
     int quantity  = Utils::toInt(args[1]);
 
-    Product* p = market.findProduct(productId);
-    if (!p) throw NotFoundException("Product ID " + std::to_string(productId));
-
-    int income = p->price * quantity;
-    player->removeItem(p->name, quantity);
+    Product& p = market.findProduct(productId);
+    int income = p.price * quantity;
+    player->removeItem(p.name, quantity);
 
     int dummy = 0;
     std::string itemName;
