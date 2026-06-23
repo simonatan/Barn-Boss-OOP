@@ -11,7 +11,7 @@ public:
 
     void showCatalog() const;
     bool buyProduct(int id, int quantity, int& playerMoney, std::string& outItemName);
-    bool sellProduct(int id, int quantity, int& playerMoney, std::string& outItemName);
+    void sellProduct(int id, int quantity);
 
     void restock(int id, int quantity);
     void changePrice(int id, int newPrice);

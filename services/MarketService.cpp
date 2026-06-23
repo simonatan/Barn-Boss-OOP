@@ -30,13 +30,9 @@ bool MarketService::sell(Player* player, const std::vector<std::string>& args) {
     int quantity  = Utils::toInt(args[1]);
 
     Product& p = market.findProduct(productId);
-    int income = p.price * quantity;
     player->removeItem(p.name, quantity);
-
-    int dummy = 0;
-    std::string itemName;
-    market.sellProduct(productId, quantity, dummy, itemName);
-    player->addBalance(income);
+    market.sellProduct(productId, quantity);
+    player->addBalance(p.price * quantity);
     return true;
 }
 

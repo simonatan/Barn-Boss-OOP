@@ -46,14 +46,11 @@ bool Market::buyProduct(int id, int quantity, int& playerMoney, std::string& out
     return true;
 }
 
-bool Market::sellProduct(int id, int quantity, int& playerMoney, std::string& outItemName) {
-    if (!Validator::isValidQuantity(quantity)) return false;
+void Market::sellProduct(int id, int quantity) {
+    if (!Validator::isValidQuantity(quantity)) return;
     Product& p = findProduct(id);
     p.quantity += quantity;
-    playerMoney += p.price * quantity;
-    outItemName  = p.name;
     std::cout << "The sale was successful!\n";
-    return true;
 }
 
 void Market::restock(int id, int quantity) {
