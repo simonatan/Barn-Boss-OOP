@@ -82,10 +82,10 @@ void GameEngine::load() {
     userService.clearAll();
     Market&    market    = marketService.getMarket();
     TaskBoard& taskBoard = taskService.getTaskBoard();
+    market.clearProducts();
+    taskBoard.clearTasks();
 
-    bool marketRestored    = false;
-    bool taskBoardRestored = false;
-    Player* currentPlayer  = nullptr;
+    Player* currentPlayer = nullptr;
     int nextId = 1;
 
     std::string line;
@@ -133,11 +133,9 @@ void GameEngine::load() {
             currentPlayer->getFarm().addAnimal(an);
         }
         else if (tag == "MARKET") {
-            if (!marketRestored) { market.clearProducts(); marketRestored = true; }
             market.setProduct(Utils::asInt(w, 1, line), w[2], Utils::asInt(w, 3, line), Utils::asInt(w, 4, line));
         }
         else if (tag == "TASK") {
-            if (!taskBoardRestored) { taskBoard.clearTasks(); taskBoardRestored = true; }
             taskBoard.addTaskWithId(Utils::asInt(w, 1, line), w[2], Utils::asInt(w, 3, line), Utils::asInt(w, 4, line), Utils::asInt(w, 5, line));
         }
     }
