@@ -1,4 +1,5 @@
 #include "../models/User.h"
+#include "../utils/Validator.h"
 
 User::User(int id_, const std::string& username_, const std::string& password_)
     : id(id_), username(username_), password(password_) {}
@@ -9,7 +10,7 @@ int User::getId() const { return id; }
 std::string User::getUsername() const { return username; }
 std::string User::getPassword() const { return password; }
 
-bool User::checkPassword(const std::string& pass) const { return password == pass; } // TODO
+bool User::checkPassword(const std::string& pass) const { return password == pass; }
 
 void User::profileInfo() const {
     std::cout << "ID: " << id << "\n"
@@ -22,10 +23,7 @@ void User::changePassword(const std::string& oldPass, const std::string& newPass
         std::cout << "Incorrect old password!\n";
         return;
     }
-    if (newPass.size() < 3) {
-        std::cout << "Password too short!\n";
-        return;
-    }
+    if (!Validator::isValidPassword(newPass)) return;
     password = newPass;
     std::cout << "Password changed successfully!\n";
 }
