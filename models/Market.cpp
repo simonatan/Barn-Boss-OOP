@@ -5,14 +5,14 @@
 
 Market::Market() {
     products = {
-        {1, "WheatSeed", 10, 20, true},
-        {2, "CornSeed",  15, 20, true},
-        {3, "Chicken",    25, 10, false},
-        {4, "Cow",        50,  5, false},
-        {5, "Wheat",      15, 20, false},
-        {6, "Corn",       20, 20, false},
-        {7, "Egg",        30, 15, false},
-        {8, "Milk",       60, 10, false}
+        {1, "WheatSeed", 10, 20},
+        {2, "CornSeed",  15, 20},
+        {3, "Chicken",   25, 10},
+        {4, "Cow",       50,  5},
+        {5, "Wheat",     15, 20},
+        {6, "Corn",      20, 20},
+        {7, "Egg",       30, 15},
+        {8, "Milk",      60, 10}
     };
 }
 
@@ -87,5 +87,5 @@ void Market::setProduct(int id, const std::string& name, int price, int quantity
             return;
         }
     }
-    products.push_back({id, name, price, quantity, false});
+    products.push_back({id, name, price, quantity});
 }

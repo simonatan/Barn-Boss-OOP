@@ -7,5 +7,4 @@ struct Product {
     std::string name;
     int price;
     int quantity;
-    bool isSeed;
 };
