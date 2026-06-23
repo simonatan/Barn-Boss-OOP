@@ -17,12 +17,10 @@ bool Farm::addAnimal(const Animal& animal) {
     return true;
 }
 
-void Farm::expandPlantCapacity() {
-    plantCapacity++;
-}
-void Farm::expandAnimalCapacity() {
-    animalCapacity++;
-}
+void Farm::expandPlantCapacity()  { plantCapacity++;  }
+void Farm::expandAnimalCapacity() { animalCapacity++; }
+void Farm::setPlantCapacity(std::size_t cap)  { plantCapacity  = cap; }
+void Farm::setAnimalCapacity(std::size_t cap) { animalCapacity = cap; }
 
 void Farm::growAll() {
     for (auto& p : plants) p.grow();

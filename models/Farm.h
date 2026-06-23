@@ -18,6 +18,8 @@ public:
 
  void expandPlantCapacity();
  void expandAnimalCapacity();
+ void setPlantCapacity(std::size_t cap);
+ void setAnimalCapacity(std::size_t cap);
 
  void growAll();
 

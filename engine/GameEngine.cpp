@@ -117,10 +117,8 @@ void GameEngine::load() {
                 currentPlayer->addItem(w[i], Utils::asInt(w, i + 1, line));
         }
         else if (tag == "FARMCAP" && currentPlayer) {
-            auto plantCap  = static_cast<std::size_t>(Utils::asInt(w, 1, line));
-            auto animalCap = static_cast<std::size_t>(Utils::asInt(w, 2, line));
-            while (currentPlayer->getFarm().getPlantCapacity()  < plantCap)  currentPlayer->getFarm().expandPlantCapacity();
-            while (currentPlayer->getFarm().getAnimalCapacity() < animalCap) currentPlayer->getFarm().expandAnimalCapacity();
+            currentPlayer->getFarm().setPlantCapacity(static_cast<std::size_t>(Utils::asInt(w, 1, line)));
+            currentPlayer->getFarm().setAnimalCapacity(static_cast<std::size_t>(Utils::asInt(w, 2, line)));
         }
         else if (tag == "PLANT" && currentPlayer) {
             Plant pl(0, w[1], Utils::asInt(w, 3, line), w[4]);
