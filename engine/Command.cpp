@@ -1,27 +1,12 @@
 #include "../engine/Command.h"
+#include "../utils/Utils.h"
 
 Command Command::parse(const std::string& input) {
     Command cmd;
-    std::string word;
-
-    for (std::size_t i = 0; i < input.size(); i++) {
-        char c = input[i];
-
-        if (c == ' ') {
-            if (!word.empty()) {
-                if (cmd.name.empty()) cmd.name = word;
-                else cmd.args.push_back(word);
-                word.clear();
-            }
-        } else {
-            word += c;
-        }
+    std::vector<std::string> words = Utils::splitWords(input);
+    if (!words.empty()) {
+        cmd.name = words[0];
+        cmd.args = std::vector(words.begin() + 1, words.end());
     }
-
-    if (!word.empty()) {
-        if (cmd.name.empty()) cmd.name = word;
-        else cmd.args.push_back(word);
-    }
-
     return cmd;
 }
